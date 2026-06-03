@@ -1,0 +1,6 @@
+{
+  "name": "Mascareignes Ocean Dashboard",
+  "description": "A mobile-optimized dashboard for monitoring sea surface temperatures, ocean currents, and upwelling anomalies around Mauritius.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
