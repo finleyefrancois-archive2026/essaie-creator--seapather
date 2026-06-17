@@ -4,11 +4,11 @@
  */
 
 import React from 'react';
-import { Anchor, Compass, PenTool, Radio } from 'lucide-react';
+import { Anchor, Compass, PenTool, Radio, Globe } from 'lucide-react';
 
 interface NavigationProps {
-  currentTab: 'dashboard' | 'analyst' | 'logbook';
-  onChangeTab: (tab: 'dashboard' | 'analyst' | 'logbook') => void;
+  currentTab: 'dashboard' | 'analyst' | 'logbook' | 'gee_climatology';
+  onChangeTab: (tab: 'dashboard' | 'analyst' | 'logbook' | 'gee_climatology') => void;
   activeAlertCount: number;
 }
 
@@ -56,6 +56,20 @@ export default function Navigation({ currentTab, onChangeTab, activeAlertCount }
             <Compass className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Tableau de bord</span>
             <span className="sm:hidden">Moniteur</span>
+          </button>
+
+          <button
+            id="nav-tab-gee"
+            onClick={() => onChangeTab('gee_climatology')}
+            className={`flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
+              currentTab === 'gee_climatology'
+                ? 'bg-bento-accent text-bento-bg shadow-sm shadow-bento-accent/30 font-bold'
+                : 'text-bento-text-muted hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <Globe className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Climatologie GEE</span>
+            <span className="sm:hidden">GEE</span>
           </button>
 
           <button

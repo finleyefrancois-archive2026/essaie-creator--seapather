@@ -12,10 +12,11 @@ import UnderWaterChart from './components/UnderWaterChart';
 import AnalystChat from './components/AnalystChat';
 import UpwellingAlerts from './components/UpwellingAlerts';
 import Logbook from './components/Logbook';
+import OceanDashboard from './components/OceanDashboard';
 import { Anchor, Waves, AlertCircle, Compass, ShieldAlert, Sparkles, HelpCircle } from 'lucide-react';
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<'dashboard' | 'analyst' | 'logbook'>('dashboard');
+  const [currentTab, setCurrentTab] = useState<'dashboard' | 'analyst' | 'logbook' | 'gee_climatology'>('dashboard');
   
   // Grid simulation offset - allows simulating daily changes in data maps
   const [dayOffset, setDayOffset] = useState<number>(0);
@@ -215,6 +216,11 @@ export default function App() {
               </div>
 
             </div>
+          )}
+
+          {/* TAB: GEE Climatology Trends */}
+          {currentTab === 'gee_climatology' && (
+            <OceanDashboard onFocusSpot={handleFocusCellFromLog} />
           )}
 
           {/* TAB 2: Analyst Chat (Direct full page interface) */}

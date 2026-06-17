@@ -1,0 +1,17 @@
+{
+  "type": "FeatureCollection",
+  "generator": "Google Earth Engine Mascareignes V11 Node JSON",
+  "features": [
+    {
+      "type": "Feature",
+      "id": 0,
+      "properties": {
+        "sst_warming_trend_k_per_year": 0.01625,
+        "pressure_trend_pa_per_year": 1.248,
+        "extreme_sst_events_count": 47,
+        "timestamp": 1779842400000
+      },
+      "geometry": null
+    }
+  ]
+}

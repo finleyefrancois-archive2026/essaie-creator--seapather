@@ -37,6 +37,51 @@ app.get("/api/health", (req: Request, res: Response) => {
   res.json({ status: "ok", service: "Mascareignes Ocean Engine" });
 });
 
+// API: Google Earth Engine Long-term Climatological Trend Analyzer
+app.post("/api/gee-analysis", async (req: Request, res: Response) => {
+  try {
+    const { sstTrend, pressureTrend, extremeCount } = req.body;
+
+    const ai = getGeminiClient();
+
+    const systemInstruction = `Tu es "L'Analyste Climatologique Senior de l'océan Indien", spécialiste de la dynamique atmosphérique des Mascareignes et de la Commission de l'Océan Indien (COI).
+Ta mission est d'interpréter les tendances de réchauffement décennal à Maurice (1985-2024) issues de Google Earth Engine et Copernicus.
+
+Donne des conseils scientifiques d'expert, très inspirants et pragmatiques, rédigés en français classique soutenu et lisible :
+1. Corrélation entre le réchauffement SST (+${sstTrend} K/an) et l'Anticyclone des Mascareignes (+${pressureTrend} Pa/an). Explique comment la pression influence les alizés et l'upwelling marin local.
+2. Évalue la fréquence des vagues de chaleur marines (${extremeCount} événements extrêmes) et l'impact sur les lagons/coraux mauriciens.
+3. Propose une hypothèse scientifique concrète pour l'agriculture/pêche ou l'aquaculture durable.
+4. Reste clair, très direct, utilisant des balises markdown structurées.`;
+
+    const promptText = `Analyse les métriques issues de Google Earth Engine pour la région de Maurice (1985-2024) :
+- Tendance thermique SST : ${sstTrend} K/an (soit approx. ${(sstTrend * 40).toFixed(2)}°C de réchauffement cumulé en 40 ans).
+- Tendance de pression atmosphérique : ${pressureTrend} Pa/an (renforcement de la ceinture de haute pression).
+- Vagues de chaleur océanique extrêmes : ${extremeCount} épisodes de dépassement du 95ème percentile climatologique.`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3.5-flash",
+      contents: promptText,
+      config: {
+        systemInstruction,
+        temperature: 0.3,
+      }
+    });
+
+    res.json({ analysis: response.text || "Diagnostic CLIM-A1 indétectable." });
+  } catch (error: any) {
+    console.warn("⚠️ GEE interpretation fell back to rules engine:", error?.message);
+    const { sstTrend, pressureTrend, extremeCount } = req.body;
+    const fallbackText = `### Rapport Climatologique Mascareignes (Mode Dégradé Local)
+*Note : Le service de traduction IA est en cours de recalibrage. Voici l'interprétation de sécurité de seapather :*
+
+1. **Réchauffement Thermique** : Une anomalie haussière de **+${sstTrend} K/an** témoigne d'une transition rapide vers un océan tropical plus chaud. En 40 ans, cela représente environ **+${(sstTrend * 40).toFixed(2)}°C**, modifiant profondément les écosystèmes pélagiques et provoquant le déplacement des bancs de thonidés.
+2. **Dynamique des Alizés (Pression)** : Le signal de **+${pressureTrend} Pa/an** montre une intensification de l'Anticyclone des Mascareignes. Cela renforce les vents de secteur Sud-Est mais peut aussi bloquer certains upwellings de rupture.
+3. **Coral Bleaching (Établi à ${extremeCount} cas)** : Ce niveau de stress thermique engendre un risque critique de blanchissement corallien le long des récifs barrières de Belle Mare et du Morne.`;
+
+    res.json({ analysis: fallbackText, isFallback: true });
+  }
+});
+
 // API: Core Marine Analyst endpoint backed by Gemini 3.5 Flash
 app.post("/api/ocean-analysis", async (req: Request, res: Response) => {
   try {
